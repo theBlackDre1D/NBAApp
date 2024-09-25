@@ -2,7 +2,8 @@ package co.init.nbaapp.navigation
 
 abstract class Path(open val path: String)
 
-sealed class PlayersListNavigation(override val path: String) : Path(path) {
-    data object PlayersList : PlayersListNavigation("players_list")
-    data object ClubDetail : PlayersListNavigation("club_detail")
+sealed class AppNavigation(override val path: String) : Path(path) {
+    data object PlayersList : AppNavigation("players_list")
+    data object PlayerDetail : AppNavigation("player_detail")
+    data object ClubDetail : AppNavigation("club_detail")
 }

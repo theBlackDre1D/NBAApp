@@ -17,4 +17,8 @@ data class Player(
     @SerializedName("draft_round") val draftRound: String,
     @SerializedName("draft_number") val draftNumber: String,
     @SerializedName("team") val team: Team
-) : Serializable
+) : Serializable {
+
+    val fullName: String
+        get() = "$firstName $lastName"
+}

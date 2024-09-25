@@ -1,7 +1,7 @@
 package co.init.nbaapp.hilt
 
 
-import co.init.nbaapp.features.BallDontLieService
+import co.init.nbaapp.features.playersList.domain.BallDontLieService
 import co.init.nbaapp.network.ApiKeyInterceptor
 import com.google.gson.Gson
 import dagger.Module
