@@ -2,6 +2,7 @@ package co.init.nbaapp.hilt
 
 
 import co.init.nbaapp.features.BallDontLieService
+import co.init.nbaapp.network.ApiKeyInterceptor
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
@@ -16,7 +17,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 private const val CONNECTION_TIMEOUT_SECONDS = 30L
-private const val BASE_URL = "https://api.o2.sk/"
+private const val BASE_URL = "https://api.balldontlie.io/v1/"
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -45,6 +46,7 @@ object AppModules {
             .addInterceptor(HttpLoggingInterceptor().apply {
                 this.setLevel(HttpLoggingInterceptor.Level.BODY)
             })
+            .addInterceptor(ApiKeyInterceptor())
             .protocols(listOf(Protocol.HTTP_1_1))
             .retryOnConnectionFailure(true)
             .build()
