@@ -25,7 +25,8 @@ class PlayersVM @Inject constructor(
     private val _state = MutableStateFlow(ScreenState())
     val state: StateFlow<ScreenState> get() = _state
 
-    val error = MutableStateFlow<Throwable?>(null)
+    private val _error = MutableStateFlow<Throwable?>(null)
+    val error: StateFlow<Throwable?> get() = _error
 
     var pickedPlayer: Player? = null
     val pickedTeam: Team? get() = pickedPlayer?.team
@@ -51,12 +52,12 @@ class PlayersVM @Inject constructor(
                         }
                     },
                     onFailure = { throwable ->
-                        error.update { throwable }
+                        _error.update { throwable }
                     }
                 )
             }
         }
     }
 
-    fun clearError() = error.update { null }
+    fun clearError() = _error.update { null }
 }

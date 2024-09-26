@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import co.init.nbaapp.extensions.navigateToPath
 import co.init.nbaapp.features.playersList.ui.PlayersVM
-import co.init.nbaapp.navigation.AppNavigation
+import co.init.nbaapp.navigation.MainActivityNavigation
 
 @Composable
 fun PlayerDetailScreen(
@@ -32,7 +32,7 @@ fun PlayerDetailScreen(
         Text(text = "Draft number: ${sharedVM.pickedPlayer?.draftNumber}")
         Text(
             modifier = Modifier.clickable {
-                navController.navigateToPath(AppNavigation.ClubDetail)
+                navController.navigateToPath(MainActivityNavigation.ClubDetail)
             },
             text = "Team: ${sharedVM.pickedPlayer?.team?.fullName}"
         )

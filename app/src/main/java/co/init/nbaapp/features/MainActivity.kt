@@ -14,7 +14,7 @@ import co.init.nbaapp.features.playerDetail.PlayerDetailScreen
 import co.init.nbaapp.features.playersList.ui.PlayersListScreen
 import co.init.nbaapp.features.playersList.ui.PlayersVM
 import co.init.nbaapp.features.teamDetail.TeamDetailScreen
-import co.init.nbaapp.navigation.AppNavigation
+import co.init.nbaapp.navigation.MainActivityNavigation
 import co.init.nbaapp.ui.theme.NBAAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -36,10 +36,10 @@ class MainActivity : ComponentActivity() {
                 ) { _ ->
                     val navController = rememberNavController()
 
-                    NavHost(navController = navController, startDestination = AppNavigation.PlayersList.path) {
-                        composablePath(AppNavigation.PlayersList) { PlayersListScreen(sharedVM, navController) }
-                        composablePath(AppNavigation.PlayerDetail) { PlayerDetailScreen(sharedVM, navController) }
-                        composablePath(AppNavigation.ClubDetail) { TeamDetailScreen(sharedVM) }
+                    NavHost(navController = navController, startDestination = MainActivityNavigation.PlayersList.path) {
+                        composablePath(MainActivityNavigation.PlayersList) { PlayersListScreen(sharedVM, navController) }
+                        composablePath(MainActivityNavigation.PlayerDetail) { PlayerDetailScreen(sharedVM, navController) }
+                        composablePath(MainActivityNavigation.ClubDetail) { TeamDetailScreen(sharedVM) }
                     }
                 }
             }

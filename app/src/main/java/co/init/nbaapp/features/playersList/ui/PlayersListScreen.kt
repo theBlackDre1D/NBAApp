@@ -1,6 +1,7 @@
 package co.init.nbaapp.features.playersList.ui
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -14,7 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import co.init.nbaapp.extensions.navigateToPath
-import co.init.nbaapp.navigation.AppNavigation
+import co.init.nbaapp.navigation.MainActivityNavigation
 
 @Composable
 fun PlayersListScreen(
@@ -24,33 +25,35 @@ fun PlayersListScreen(
     val state = sharedVM.state.collectAsState()
     val error = sharedVM.error.collectAsState()
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        itemsIndexed(state.value.players) { index, player ->
-            PlayerItem(player) {
-                sharedVM.pickedPlayer = it
-                navController.navigateToPath(AppNavigation.PlayerDetail)
+    Column {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            itemsIndexed(state.value.players) { index, player ->
+                PlayerItem(player) {
+                    sharedVM.pickedPlayer = it
+                    navController.navigateToPath(MainActivityNavigation.PlayerDetail)
+                }
+
+                if (index == state.value.players.size - 1 && !state.value.loading) {
+                    sharedVM.getPlayers()
+                }
             }
 
-            if (index == state.value.players.size - 1 && !state.value.loading) {
-                sharedVM.getPlayers()
+            if (state.value.loading) {
+                item {
+                    CircularProgressIndicator(
+                        modifier = Modifier.wrapContentSize()
+                    )
+                }
             }
         }
 
-        if (state.value.loading) {
-            item {
-                CircularProgressIndicator(
-                    modifier = Modifier.wrapContentSize()
-                )
-            }
+        error.value?.let {
+            Toast.makeText(LocalContext.current, it.message, Toast.LENGTH_LONG).show()
+            sharedVM.clearError()
         }
-    }
-
-    error.value?.let {
-        Toast.makeText(LocalContext.current, it.message, Toast.LENGTH_LONG).show()
-        sharedVM.clearError()
     }
 }
