@@ -18,11 +18,11 @@ import co.init.nbaapp.navigation.AppNavigation
 
 @Composable
 fun PlayersListScreen(
-    viewModel: PlayersVM,
+    sharedVM: PlayersVM,
     navController: NavHostController
 ) {
-    val state = viewModel.state.collectAsState()
-    val error = viewModel.error.collectAsState()
+    val state = sharedVM.state.collectAsState()
+    val error = sharedVM.error.collectAsState()
 
     LazyColumn(
         modifier = Modifier
@@ -31,12 +31,12 @@ fun PlayersListScreen(
     ) {
         itemsIndexed(state.value.players) { index, player ->
             PlayerItem(player) {
-                viewModel.pickedPlayer = it
+                sharedVM.pickedPlayer = it
                 navController.navigateToPath(AppNavigation.PlayerDetail)
             }
 
             if (index == state.value.players.size - 1 && !state.value.loading) {
-                viewModel.getPlayers()
+                sharedVM.getPlayers()
             }
         }
 
@@ -51,6 +51,6 @@ fun PlayersListScreen(
 
     error.value?.let {
         Toast.makeText(LocalContext.current, it.message, Toast.LENGTH_LONG).show()
-        viewModel.clearError()
+        sharedVM.clearError()
     }
 }

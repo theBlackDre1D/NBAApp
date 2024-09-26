@@ -13,6 +13,7 @@ import co.init.nbaapp.extensions.composablePath
 import co.init.nbaapp.features.playerDetail.PlayerDetailScreen
 import co.init.nbaapp.features.playersList.ui.PlayersListScreen
 import co.init.nbaapp.features.playersList.ui.PlayersVM
+import co.init.nbaapp.features.teamDetail.TeamDetailScreen
 import co.init.nbaapp.navigation.AppNavigation
 import co.init.nbaapp.ui.theme.NBAAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,8 +38,8 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(navController = navController, startDestination = AppNavigation.PlayersList.path) {
                         composablePath(AppNavigation.PlayersList) { PlayersListScreen(sharedVM, navController) }
-                        composablePath(AppNavigation.PlayerDetail) { PlayerDetailScreen(sharedVM) }
-                        composablePath(AppNavigation.ClubDetail) { /* TODO */ }
+                        composablePath(AppNavigation.PlayerDetail) { PlayerDetailScreen(sharedVM, navController) }
+                        composablePath(AppNavigation.ClubDetail) { TeamDetailScreen(sharedVM) }
                     }
                 }
             }

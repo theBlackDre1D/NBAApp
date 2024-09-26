@@ -3,6 +3,7 @@ package co.init.nbaapp.features.playersList.ui
 import androidx.lifecycle.ViewModel
 import co.init.nbaapp.data.PageRequest
 import co.init.nbaapp.data.Player
+import co.init.nbaapp.data.Team
 import co.init.nbaapp.extensions.doInCoroutine
 import co.init.nbaapp.features.playersList.domain.GetPlayersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,11 +23,12 @@ class PlayersVM @Inject constructor(
     )
 
     private val _state = MutableStateFlow(ScreenState())
-    val state: StateFlow<ScreenState> = _state
+    val state: StateFlow<ScreenState> get() = _state
 
     val error = MutableStateFlow<Throwable?>(null)
 
     var pickedPlayer: Player? = null
+    val pickedTeam: Team? get() = pickedPlayer?.team
 
     fun initialLoadData() {
         if (state.value.players.isEmpty() && !state.value.loading) {
