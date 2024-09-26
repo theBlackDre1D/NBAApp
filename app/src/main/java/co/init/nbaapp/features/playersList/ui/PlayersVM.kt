@@ -17,40 +17,44 @@ class PlayersVM @Inject constructor(
 ) : ViewModel() {
 
     data class ScreenState(
-        val players: Result<List<Player>> = Result.success(listOf()),
+        val players: List<Player> = listOf(),
         val loading: Boolean = false
     )
 
     private val _state = MutableStateFlow(ScreenState())
     val state: StateFlow<ScreenState> = _state
 
+    val error = MutableStateFlow<Throwable?>(null)
+
     var pickedPlayer: Player? = null
 
-    private val pageRequest: PageRequest
-        get() = PageRequest(_state.value.players.getOrNull()?.size ?: 0)
+    fun initialLoadData() {
+        if (state.value.players.isEmpty() && !state.value.loading) {
+            getPlayers()
+        }
+    }
 
     fun getPlayers() {
         doInCoroutine {
             _state.update { it.copy(loading = true) }
 
+            val pageRequest = PageRequest(_state.value.players.size)
             getPlayersUseCase(pageRequest).collect { result ->
                 _state.update { it.copy(loading = false) }
 
                 result.fold(
                     onSuccess = { success ->
-                        _state.update { currentState ->
-                            currentState.copy(
-                                players = Result.success(
-                                    currentState.players.getOrNull().orEmpty() + success.data
-                                )
-                            )
+                        _state.update {
+                            currentState -> currentState.copy(players = currentState.players + success.data)
                         }
                     },
                     onFailure = { throwable ->
-                        _state.update { it.copy(players = Result.failure(throwable)) }
+                        error.update { throwable }
                     }
                 )
             }
         }
     }
+
+    fun clearError() = error.update { null }
 }

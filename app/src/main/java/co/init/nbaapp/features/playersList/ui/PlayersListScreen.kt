@@ -1,16 +1,16 @@
 package co.init.nbaapp.features.playersList.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import co.init.nbaapp.extensions.navigateToPath
@@ -22,32 +22,35 @@ fun PlayersListScreen(
     navController: NavHostController
 ) {
     val state = viewModel.state.collectAsState()
-    val listState = rememberLazyListState()
+    val error = viewModel.error.collectAsState()
 
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(16.dp)
     ) {
-        items(state.value.players.getOrNull().orEmpty()) { player ->
+        itemsIndexed(state.value.players) { index, player ->
             PlayerItem(player) {
                 viewModel.pickedPlayer = it
                 navController.navigateToPath(AppNavigation.PlayerDetail)
             }
-        }
 
-        item {
-            LaunchedEffect(listState) {
+            if (index == state.value.players.size - 1 && !state.value.loading) {
                 viewModel.getPlayers()
             }
         }
 
-        item {
-            if (state.value.loading) {
+        if (state.value.loading) {
+            item {
                 CircularProgressIndicator(
                     modifier = Modifier.wrapContentSize()
                 )
             }
         }
+    }
+
+    error.value?.let {
+        Toast.makeText(LocalContext.current, it.message, Toast.LENGTH_LONG).show()
+        viewModel.clearError()
     }
 }
