@@ -1,6 +1,5 @@
 package co.init.nbaapp.features.playersList.ui
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,7 +10,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import co.init.nbaapp.extensions.navigateToPath
@@ -23,7 +21,6 @@ fun PlayersListScreen(
     navController: NavHostController
 ) {
     val state = sharedVM.state.collectAsState()
-    val error = sharedVM.error.collectAsState()
 
     Column {
         LazyColumn(
@@ -49,11 +46,6 @@ fun PlayersListScreen(
                     )
                 }
             }
-        }
-
-        error.value?.let {
-            Toast.makeText(LocalContext.current, it.message, Toast.LENGTH_LONG).show()
-            sharedVM.clearError()
         }
     }
 }

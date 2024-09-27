@@ -6,6 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
@@ -30,9 +35,13 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             NBAAppTheme {
+                val snackbarHostState = remember { SnackbarHostState() }
+                val error = sharedVM.error.collectAsState()
+
                 Scaffold(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .fillMaxSize(),
+                    snackbarHost = { SnackbarHost(snackbarHostState) }
                 ) { _ ->
                     val navController = rememberNavController()
 
@@ -40,6 +49,13 @@ class MainActivity : ComponentActivity() {
                         composablePath(MainActivityNavigation.PlayersList) { PlayersListScreen(sharedVM, navController) }
                         composablePath(MainActivityNavigation.PlayerDetail) { PlayerDetailScreen(sharedVM, navController) }
                         composablePath(MainActivityNavigation.ClubDetail) { TeamDetailScreen(sharedVM) }
+                    }
+
+                    error.value?.let { throwable ->
+                        LaunchedEffect(throwable) {
+                            snackbarHostState.showSnackbar(
+                                message = throwable.message.orEmpty())
+                        }
                     }
                 }
             }
