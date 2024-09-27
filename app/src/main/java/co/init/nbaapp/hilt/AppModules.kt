@@ -40,16 +40,21 @@ object AppModules {
     }
 
     @Provides
-    fun provideMasOkHttpClient(): OkHttpClient =
+    fun provideMasOkHttpClient(apiKeyInterceptor: ApiKeyInterceptor): OkHttpClient =
         OkHttpClient.Builder()
             .connectTimeout(CONNECTION_TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .addInterceptor(HttpLoggingInterceptor().apply {
                 this.setLevel(HttpLoggingInterceptor.Level.BODY)
             })
-            .addInterceptor(ApiKeyInterceptor())
+            .addInterceptor(apiKeyInterceptor)
             .protocols(listOf(Protocol.HTTP_1_1))
             .retryOnConnectionFailure(true)
             .build()
+
+    @Provides
+    fun provideAPiKeyInterceptor(): ApiKeyInterceptor {
+        return ApiKeyInterceptor()
+    }
 
     @Provides
     fun provideScratchedCardService(retrofit: Retrofit): BallDontLieService =
